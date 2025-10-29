@@ -2,107 +2,177 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🚗 Used Car Price Predictor</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
     body {
-      background: linear-gradient(135deg, #e6f0ff 0%, #ffffff 100%);
+      background: linear-gradient(135deg,#e6f0ff 0%,#ffffff 100%);
       min-height: 100vh;
-      font-family: 'Poppins', sans-serif;
-      overflow-x: hidden;
+      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       color: #1a202c;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .page-wrap {
+      width: 100%;
+      padding: 2.2rem 1rem;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      max-width: 1220px;               
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.42);
+      border-radius: 1.5rem;
+      padding: 2.25rem;
+      box-shadow: 0 16px 60px rgba(6,10,24,0.06);
+      transition: transform .22s ease, box-shadow .22s ease;
+      box-sizing: border-box;
+      overflow: hidden;     
     }
-    .glass-card:hover {
-      transform: scale(1.01);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    .glass-card:hover { transform: translateY(-4px); }
+
+    h1 { margin:0 0 .35rem; font-size:2.6rem; color:#0f172a; line-height:1; }
+    p.lead { margin:0 0 1rem; color:#64748b; font-size:1.05rem; }
+
+    form {
+      width:100%;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin:0;
+      padding:0;
+      align-items:start;
     }
 
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
+    @media (min-width:640px) {
+      form { grid-template-columns: 1fr 1fr; }
     }
-    .modal-content {
-      background: white;
-      border-radius: 1rem;
-      padding: 2rem;
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-      animation: fadeInUp 0.5s ease;
+    @media (min-width:1024px) {
+      form { grid-template-columns: 1fr 1fr 1fr; }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+    form > div { display:block; min-width:0; }
+
+    label {
+      display:block;
+      font-weight:600;
+      font-size:.95rem;
+      margin-bottom:.35rem;
+      color:#1f2937;
     }
 
-    .gradient-price {
-      font-size: 3.5rem;
-      font-weight: 800;
-      background: linear-gradient(90deg, #22c55e, #16a34a, #15803d);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 10px rgba(34, 197, 94, 0.25);
+    input, select, textarea {
+      width:100%;
+      padding:.92rem 1rem;
+      font-size:1rem;
+      border-radius:.85rem;
+      border:1px solid #e6eaf0;
+      background: rgba(255,255,255,0.98);
+      outline:none;
+      color:#0f172a;
+    }
+    input::placeholder { color:#9ca3af; }
+    select { appearance:none; -webkit-appearance:none; -moz-appearance:none; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 10px 30px rgba(37,99,235,0.08);
     }
 
     .predict-btn {
-      background: linear-gradient(90deg, #2563eb, #3b82f6, #06b6d4);
-      color: white;
-      font-weight: 700;
-      font-size: 1.2rem;
-      padding: 0.9rem 3rem;
-      border-radius: 1rem;
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-      transition: all 0.3s ease;
+      grid-column: 1 / -1; 
+      margin-top: .25rem;
+      background: linear-gradient(90deg,#2563eb,#3b82f6,#06b6d4);
+      color:white;
+      font-weight:800;
+      padding:.98rem 1.25rem;
+      border-radius:1rem;
+      border:none;
+      cursor:pointer;
+      box-shadow: 0 12px 36px rgba(37,99,235,0.18);
+      transition: transform .12s ease, box-shadow .12s ease;
+      font-size:1.02rem;
+    }
+    .predict-btn:hover { transform: translateY(-3px); box-shadow: 0 18px 46px rgba(37,99,235,0.22); }
+
+    .modal {
+      display:none;
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      align-items:center;
+      justify-content:center;
+      z-index:120;
+      padding:1rem;
+    }
+    .modal.open { display:flex; }
+    .modal-content {
+      width:100%;
+      max-width:560px;
+      background:#fff;
+      border-radius:1rem;
+      padding:1.25rem;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.25);
+      box-sizing:border-box;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
 
-    .predict-btn:hover {
-      transform: scale(1.07);
-      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.5);
-      background: linear-gradient(90deg, #1d4ed8, #2563eb, #0284c7);
+    .modal-title {
+        font-weight: 700;
+        color: #0f172a;
+        text-align: center !important;
+        width: 100%;
+    }
+    .modal-close { background:transparent; border:none; font-size:1.3rem; cursor:pointer; color:#475569; }
+
+    .gradient-price {
+      font-weight:800;
+      font-size:2.1rem;
+      background: linear-gradient(270deg, #22c55e, #5aff94); 
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin:.25rem 0 .6rem;
     }
 
     .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.8rem 2rem;
-      border-top: 1px solid #e5e7eb;
-      padding-top: 1.2rem;
-      text-align: left;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.6rem 1.2rem;
+      border-top: 1px solid #eef2f7;
+      padding-top:.9rem;
+      margin-top:.6rem;
     }
+    .details-grid p { margin:0; display:flex; justify-content:space-between; align-items:center; color:#374151; font-size:.95rem; }
+    .details-grid strong { color:#0b4db1; font-weight:600; margin-right:.5rem; }
 
-    .details-grid p {
-      font-size: 0.95rem;
-      color: #374151;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .details-grid strong {
-      color: #1e3a8a;
-      font-weight: 600;
-    }
-
-    @media (max-width: 600px) {
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width:640px) {
+      .glass-card { padding:1.2rem; border-radius:1rem; }
+      h1 { font-size:1.6rem; margin-bottom:.35rem; }
+      p.lead { margin-bottom:.9rem; font-size:.98rem; }
+      .modal-content { padding:1rem; max-width:94%; }
+      .gradient-price { font-size:1.7rem; }
+      .details-grid { grid-template-columns:1fr; gap:.45rem; }
+      .predict-btn { padding:.9rem; font-size:1rem; border-radius:.9rem; }
     }
   </style>
 
@@ -110,154 +180,193 @@
     const brandModels = JSON.parse('{{ brand_model_map | safe }}');
 
     function updateModels() {
-      const brand = document.getElementById("brand").value;
-      const modelDropdown = document.getElementById("model_name");
-      modelDropdown.innerHTML = "";
-
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = brand ? "Select Model" : "Select Brand First";
+      const brand = document.getElementById('brand').value;
+      const modelDropdown = document.getElementById('model_name');
+      if (!modelDropdown) return;
+      modelDropdown.innerHTML = '';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
       placeholder.disabled = true;
       placeholder.selected = true;
+      placeholder.textContent = brand ? 'Select Model' : 'Select Brand First';
       modelDropdown.appendChild(placeholder);
 
       if (brand && brandModels[brand]) {
-        brandModels[brand].forEach(model => {
-          const option = document.createElement("option");
-          option.value = model;
-          option.textContent = model;
-          modelDropdown.appendChild(option);
+        brandModels[brand].forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          modelDropdown.appendChild(opt);
         });
       }
     }
 
     function openModal(details, price) {
-      const modal = document.getElementById("resultModal");
-      const detailList = document.getElementById("carDetails");
-      const priceText = document.getElementById("predictedPrice");
+      const modal = document.getElementById('resultModal');
+      const priceEl = document.getElementById('predictedPrice');
+      const detailsEl = document.getElementById('carDetails');
 
-      priceText.textContent = price;
-      detailList.innerHTML = `
+      priceEl.textContent = price;
+      detailsEl.innerHTML = `
         <div class="details-grid">
           <p><strong>Brand</strong><span>${details.brand}</span></p>
           <p><strong>Model</strong><span>${details.model_name}</span></p>
           <p><strong>Fuel</strong><span>${details.fuel_type}</span></p>
           <p><strong>Transmission</strong><span>${details.transmission}</span></p>
-          <p><strong>Seller Type</strong><span>${details.seller_type}</span></p>
+          <p><strong>Seller</strong><span>${details.seller_type}</span></p>
           <p><strong>Seats</strong><span>${details.seats}</span></p>
-          <p><strong>Age</strong><span>${details.vehicle_age} years</span></p>
+          <p><strong>Age</strong><span>${details.vehicle_age} yrs</span></p>
           <p><strong>KM Driven</strong><span>${details.km_driven}</span></p>
           <p><strong>Mileage</strong><span>${details.mileage} km/l</span></p>
           <p><strong>Engine</strong><span>${details.engine} cc</span></p>
           <p><strong>Power</strong><span>${details.max_power} bhp</span></p>
-        </div>
-      `;
-      modal.style.display = "flex";
+        </div>`;
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
-      document.getElementById("resultModal").style.display = "none";
+      const modal = document.getElementById('resultModal');
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     function validateForm() {
-      const requiredFields = document.querySelectorAll("select[required], input[required]");
-      for (const field of requiredFields) {
-        if (!field.value.trim()) {
-          alert("⚠️ Please fill all fields before predicting the price!");
-          field.focus();
+      const requiredFields = document.querySelectorAll('select[required], input[required]');
+      for (const el of requiredFields) {
+        if (!String(el.value).trim()) {
+          el.focus();
+          alert('⚠️ Please fill all fields before predicting the price!');
           return false;
         }
       }
       return true;
     }
 
-    window.onload = () => updateModels();
+    window.addEventListener('load', () => {
+      const b = document.getElementById('brand');
+      if (b && b.value) updateModels();
+
+      const modal = document.getElementById('resultModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    });
   </script>
 </head>
 
 <body>
-  <div class="w-full min-h-screen flex flex-col justify-center items-center px-6">
-    <div class="glass-card w-full max-w-6xl p-10 rounded-3xl shadow-2xl">
-      <h1 class="text-5xl text-center font-bold mb-3" style="color: #111827; text-shadow: 2px 2px 5px rgba(0,0,0,0.15);">
-        🚗 Used Car Price Predictor
-      </h1>
-      <p class="text-center text-gray-600 mb-10 text-lg">Get an AI-based resale price instantly</p>
+  <div class="page-wrap">
+    <div class="glass-card" role="main" aria-labelledby="title">
+      <h1 id="title" style="text-align: center;font-family:'Roboto Condensed';text-shadow: 1px 1px 5px rgb(143, 143, 143);">🚗 Used Car Price Predictor</h1>
+      <p class="lead" style="text-align: center;">Get an AI-based resale price instantly</p>
 
-      <form method="post" action="/predict" class="grid grid-cols-3 gap-6" onsubmit="return validateForm()">
-        {% for field in ["brand", "model_name", "seller_type", "fuel_type", "transmission"] %}
-        {% endfor %}
-
+      <form method="post" action="/predict" onsubmit="return validateForm()">
         <div>
-          <label class="block mb-1 font-medium">🏷️ Brand</label>
-          <select name="brand" id="brand" class="w-full border p-3 rounded" required onchange="updateModels()">
+          <label>🏷️ Brand</label>
+          <select name="brand" id="brand" required onchange="updateModels()">
             <option value="" disabled selected>Select Brand</option>
             {% for brand in brands %}
-              <option value="{{brand}}">{{brand}}</option>
+              <option value="{{ brand }}">{{ brand }}</option>
             {% endfor %}
           </select>
         </div>
 
         <div>
-          <label class="block mb-1 font-medium">🚘 Model</label>
-          <select name="model_name" id="model_name" class="w-full border p-3 rounded" required>
+          <label>🚘 Model</label>
+          <select name="model_name" id="model_name" required>
             <option value="" disabled selected>Select Brand First</option>
           </select>
         </div>
 
         <div>
-          <label class="block mb-1 font-medium">🧾 Seller Type</label>
-          <select name="seller_type" class="w-full border p-3 rounded" required>
+          <label>🧾 Seller Type</label>
+          <select name="seller_type" required>
             <option value="" disabled selected>Select Seller Type</option>
             {% for s in seller_types %}
-              <option value="{{s}}">{{s}}</option>
+              <option value="{{ s }}">{{ s }}</option>
             {% endfor %}
           </select>
         </div>
 
         <div>
-          <label class="block mb-1 font-medium">⛽ Fuel Type</label>
-          <select name="fuel_type" class="w-full border p-3 rounded" required>
+          <label>⛽ Fuel Type</label>
+          <select name="fuel_type" required>
             <option value="" disabled selected>Select Fuel Type</option>
             {% for f in fuel_types %}
-              <option value="{{f}}">{{f}}</option>
+              <option value="{{ f }}">{{ f }}</option>
             {% endfor %}
           </select>
         </div>
 
         <div>
-          <label class="block mb-1 font-medium">⚙️ Transmission</label>
-          <select name="transmission" class="w-full border p-3 rounded" required>
+          <label>⚙️ Transmission</label>
+          <select name="transmission" required>
             <option value="" disabled selected>Select Transmission</option>
             {% for t in transmissions %}
-              <option value="{{t}}">{{t}}</option>
+              <option value="{{ t }}">{{ t }}</option>
             {% endfor %}
           </select>
         </div>
 
-        <div><label class="block mb-1 font-medium">💺 Seats</label><input name="seats" type="number" placeholder="e.g. 5" class="w-full border p-3 rounded" required></div>
-        <div><label class="block mb-1 font-medium">📅 Age (years)</label><input name="vehicle_age" type="number" placeholder="e.g. 4" class="w-full border p-3 rounded" required></div>
-        <div><label class="block mb-1 font-medium">📍 KM Driven</label><input name="km_driven" type="number" placeholder="e.g. 45000" class="w-full border p-3 rounded" required></div>
-        <div><label class="block mb-1 font-medium">🚦 Mileage (km/l)</label><input name="mileage" type="number" step="0.1" placeholder="e.g. 18.5" class="w-full border p-3 rounded" required></div>
-        <div><label class="block mb-1 font-medium">🔧 Engine (cc)</label><input name="engine" type="number" placeholder="e.g. 1200" class="w-full border p-3 rounded" required></div>
-        <div><label class="block mb-1 font-medium">⚡ Max Power (bhp)</label><input name="max_power" type="number" step="0.1" placeholder="e.g. 82.5" class="w-full border p-3 rounded" required></div>
-
-        <div class="col-span-3 text-center mt-6">
-          <button type="submit" class="predict-btn">
-            🔮 Predict Car Price
-          </button>
+        <div>
+          <label>💺 Seats</label>
+          <input name="seats" type="number" placeholder="e.g. 5" required>
         </div>
+
+        <div>
+          <label>📅 Age (years)</label>
+          <input name="vehicle_age" type="number" placeholder="e.g. 4" required>
+        </div>
+
+        <div>
+          <label>📍 KM Driven</label>
+          <input name="km_driven" type="number" placeholder="e.g. 45000" required>
+        </div>
+
+        <div>
+          <label>🚦 Mileage (km/l)</label>
+          <input name="mileage" type="number" step="0.1" placeholder="e.g. 18.5" required>
+        </div>
+
+        <div>
+          <label>🔧 Engine (cc)</label>
+          <input name="engine" type="number" placeholder="e.g. 1200" required>
+        </div>
+
+        <div>
+          <label>⚡ Max Power (bhp)</label>
+          <input name="max_power" type="number" step="0.1" placeholder="e.g. 82.5" required>
+        </div>
+
+        <button type="submit" class="predict-btn" style="font-family:'Roboto Condensed';font-size: large;background: linear-gradient(to right , rgb(200, 73, 255) , rgb(16, 149, 244));" >🌟 Predict Car Price 🌟</button>
       </form>
     </div>
   </div>
 
-  <div id="resultModal" class="modal">
-    <div class="modal-content">
-      <h2 class="text-3xl font-bold text-blue-700 mb-4">💰 Predicted Selling Price</h2>
-      <p id="predictedPrice" class="gradient-price mb-4"></p>
-      <div id="carDetails" class="text-gray-700"></div>
-      <button onclick="closeModal()" class="mt-6 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white py-2 px-8 rounded-lg shadow-md font-semibold transition-all">
-        ✖ Close
-      </button>
+  <div id="resultModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-content" role="document" style="text-align: center;">
+      <div class="modal-head" style="text-align: center;">
+        <div style="font-family:'Roboto Condensed'">💰 Predicted Selling Price</div>
+      </div>
+
+      <div>
+        <p id="predictedPrice" class="gradient-price" style="font-family:'Roboto Condensed';"></p>
+        <div id="carDetails"></div>
+
+        <div style="text-align:center;margin-top:1rem;">
+          <button onclick="closeModal()" style="background:linear-gradient(90deg,#ef4444,#f472b6); color:#fff; border:none; padding:.6rem 1rem; border-radius:.6rem; font-weight:700;width: 150px;">
+            ✖ Close
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
